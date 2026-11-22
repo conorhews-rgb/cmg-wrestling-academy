@@ -641,6 +641,99 @@ if ("IntersectionObserver" in window) {
   countEls.forEach((node) => counter.observe(node));
 }
 
+/* ---------- Photo strip: moved by hand only ---------- */
+
+const stripScroller = $(".strip-scroller");
+if (stripScroller) {
+  const stripTiles = $$(".strip-tile", stripScroller);
+  const meter = $(".strip-meter span");
+  const prevBtn = $("[data-strip-prev]");
+  const nextBtn = $("[data-strip-next]");
+
+  // each photo wipes in the first time it comes into view
+  if ("IntersectionObserver" in window) {
+    const tileObserver = new IntersectionObserver(
+      (entries) => {
+        entries
+          .filter((entry) => entry.isIntersecting)
+          .forEach((entry, index) => {
+            entry.target.style.setProperty("--i", index);
+            entry.target.classList.add("is-visible");
+            tileObserver.unobserve(entry.target);
+          });
+      },
+      { rootMargin: "0px 0px -14% 0px", threshold: 0.02 }
+    );
+    stripTiles.forEach((tile) => tileObserver.observe(tile));
+  } else {
+    stripTiles.forEach((tile) => tile.classList.add("is-visible"));
+  }
+
+  // position meter and arrow states
+  let stripQueued = false;
+  const updateStrip = () => {
+    stripQueued = false;
+    const max = stripScroller.scrollWidth - stripScroller.clientWidth;
+    const left = stripScroller.scrollLeft;
+    const ratio = stripScroller.clientWidth / stripScroller.scrollWidth;
+    const progress = max > 0 ? Math.min(left / max, 1) : 0;
+    meter.style.width = `${ratio * 100}%`;
+    meter.style.transform = `translateX(${progress * (1 / ratio - 1) * 100}%)`;
+    prevBtn.disabled = left <= 1;
+    nextBtn.disabled = left >= max - 1;
+  };
+  const queueStrip = () => {
+    if (stripQueued) return;
+    stripQueued = true;
+    requestAnimationFrame(updateStrip);
+  };
+  stripScroller.addEventListener("scroll", queueStrip, { passive: true });
+  window.addEventListener("resize", queueStrip);
+  window.addEventListener("load", queueStrip);
+  updateStrip();
+
+  // arrows step to the previous or next photo
+  const tileLeft = (tile) =>
+    tile.getBoundingClientRect().left - stripScroller.getBoundingClientRect().left + stripScroller.scrollLeft - 14;
+  const stepStrip = (dir) => {
+    const current = stripScroller.scrollLeft;
+    const stops = stripTiles.map(tileLeft);
+    const target =
+      dir > 0
+        ? stops.find((stop) => stop > current + 2)
+        : stops.filter((stop) => stop < current - 2).pop();
+    if (target === undefined) return;
+    stripScroller.scrollTo({ left: target, behavior: reduceMotion ? "auto" : "smooth" });
+  };
+  prevBtn.addEventListener("click", () => stepStrip(-1));
+  nextBtn.addEventListener("click", () => stepStrip(1));
+
+  // click and drag with a mouse
+  let drag = null;
+  stripScroller.addEventListener("pointerdown", (e) => {
+    if (e.pointerType !== "mouse" || e.button !== 0) return;
+    drag = { id: e.pointerId, x: e.clientX, left: stripScroller.scrollLeft, moved: false };
+  });
+  stripScroller.addEventListener("pointermove", (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const dx = e.clientX - drag.x;
+    if (!drag.moved && Math.abs(dx) < 4) return;
+    if (!drag.moved) {
+      drag.moved = true;
+      stripScroller.setPointerCapture(drag.id);
+      stripScroller.classList.add("is-dragging");
+    }
+    stripScroller.scrollLeft = drag.left - dx;
+  });
+  const endDrag = (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    stripScroller.classList.remove("is-dragging");
+    drag = null;
+  };
+  stripScroller.addEventListener("pointerup", endDrag);
+  stripScroller.addEventListener("pointercancel", endDrag);
+}
+
 /* ---------- Scroll-linked movement ---------- */
 
 const progressBar = $(".scroll-progress span");
@@ -648,8 +741,6 @@ const hero = $(".hero");
 const heroImg = $(".hero-img");
 const footer = $(".site-footer");
 const mobileCta = $("#mobile-cta");
-const strip = $("[data-strip]");
-const stripTrack = strip ? $(".strip-track", strip) : null;
 const parallaxFrames = $$("[data-parallax]").map((node) => ({
   node,
   img: $("img", node),
@@ -707,16 +798,6 @@ const updateOnScroll = () => {
     const progress = (vh - rect.top) / (vh + rect.height);
     img.style.translate = `0 ${((progress - 0.5) * amount * rect.height).toFixed(1)}px`;
   });
-
-  // the photo strip slides sideways as it passes through the screen
-  if (strip) {
-    const rect = strip.getBoundingClientRect();
-    if (rect.bottom >= 0 && rect.top <= vh) {
-      const progress = clamp01((vh - rect.top) / (vh + rect.height));
-      const travel = Math.max(0, stripTrack.scrollWidth - strip.clientWidth);
-      stripTrack.style.transform = `translate3d(${(-travel * progress).toFixed(1)}px, 0, 0)`;
-    }
-  }
 };
 
 const queueFrame = () => {

@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="images/hero.jpg">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=4">
   <script>(function(d){d.classList.add("js");if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches)d.classList.add("motion");})(document.documentElement);</script>
 </head>
 <body>
@@ -177,15 +177,24 @@
       </div>
     </section>
 
-    <!-- ============ Photo strip (slides sideways as the page scrolls) ============ -->
-    <div class="strip" data-strip role="group" aria-label="Photos from practice and competition">
-      <div class="strip-track">
-        <img class="tile-wide" src="images/practice.jpg" alt="Wrestlers drilling on the mat during practice" width="1728" height="530" loading="lazy">
-        <img class="tile-tall" src="images/bike.jpg" alt="A wrestler doing bike sprints after practice" width="720" height="1280" loading="lazy">
-        <img class="tile-wide" src="images/castleton-team.jpg" alt="CMG wrestlers and coaches at the Castleton Fall Classic" width="1178" height="786" loading="lazy">
-        <img class="tile-tall" src="images/castleton-win.jpg" alt="A CMG wrestler getting his hand raised" width="1048" height="1397" loading="lazy">
-        <img class="tile-wide tile-top" src="images/preseason-team.jpg" alt="CMG wrestlers with their medals" width="1079" height="963" loading="lazy">
-        <img class="tile-wide" src="images/turf.jpg" alt="Wrestlers running sprints on the turf" width="1728" height="476" loading="lazy">
+    <!-- ============ Photo strip (scrolled by hand, each photo wipes in) ============ -->
+    <div class="strip" data-strip>
+      <div class="strip-scroller" tabindex="0" role="region" aria-label="Photos from practice and competition. Scroll sideways to see more.">
+        <div class="strip-track">
+          <figure class="strip-tile tile-wide wipe-v"><img src="images/practice.jpg" alt="Wrestlers drilling on the mat during practice" width="1728" height="530" loading="lazy"></figure>
+          <figure class="strip-tile tile-tall wipe-v"><img src="images/bike.jpg" alt="A wrestler doing bike sprints after practice" width="720" height="1280" loading="lazy"></figure>
+          <figure class="strip-tile tile-wide wipe-v"><img src="images/castleton-team.jpg" alt="CMG wrestlers and coaches at the Castleton Fall Classic" width="1178" height="786" loading="lazy"></figure>
+          <figure class="strip-tile tile-tall wipe-v"><img src="images/castleton-win.jpg" alt="A CMG wrestler getting his hand raised" width="1048" height="1397" loading="lazy"></figure>
+          <figure class="strip-tile tile-wide tile-top wipe-v"><img src="images/preseason-team.jpg" alt="CMG wrestlers with their medals" width="1079" height="963" loading="lazy"></figure>
+          <figure class="strip-tile tile-wide wipe-v"><img src="images/turf.jpg" alt="Wrestlers running sprints on the turf" width="1728" height="476" loading="lazy"></figure>
+        </div>
+      </div>
+      <div class="container strip-controls">
+        <div class="strip-meter" aria-hidden="true"><span></span></div>
+        <div class="strip-buttons">
+          <button class="strip-btn" type="button" data-strip-prev aria-label="Previous photos"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M15 4l-8 8 8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="strip-btn" type="button" data-strip-next aria-label="Next photos"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
       </div>
     </div>
 
@@ -671,6 +680,6 @@
     </button>
   </dialog>
 
-  <script src="js/main.js" defer></script>
+  <script src="js/main.js?v=4" defer></script>
 </body>
 </html>
