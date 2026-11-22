@@ -10,6 +10,9 @@ const SCHEDULE = {
   4: { start: "18:00", end: "19:30" },
 };
 
+// First day this schedule applies, as YYYY-MM-DD.
+const SCHEDULE_START = "2026-11-23";
+
 const COACHES = {
   taylor: {
     name: "Taylor Donovan",
@@ -194,12 +197,16 @@ const easternNow = () => {
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: "America/New_York",
     weekday: "short",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
     hourCycle: "h23",
   }).formatToParts(new Date());
   const get = (type) => parts.find((p) => p.type === type).value;
   return {
+    utcDate: Date.UTC(Number(get("year")), Number(get("month")) - 1, Number(get("day"))),
     day: SHORT_DAYS.indexOf(get("weekday")),
     minutes: Number(get("hour")) * 60 + Number(get("minute")),
   };
@@ -211,6 +218,8 @@ const nextPractice = () => {
     const day = (now.day + offset) % 7;
     const slot = SCHEDULE[day];
     if (!slot) continue;
+    const isoDate = new Date(now.utcDate + offset * 86400000).toISOString().slice(0, 10);
+    if (isoDate < SCHEDULE_START) continue;
     if (offset === 0) {
       if (now.minutes >= toMinutes(slot.end)) continue;
       if (now.minutes >= toMinutes(slot.start)) {
