@@ -19,10 +19,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="images/hero.jpg">
   <link rel="stylesheet" href="css/styles.css">
-  <script>document.documentElement.classList.add("js");</script>
+  <script>(function(d){d.classList.add("js");if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches)d.classList.add("motion");})(document.documentElement);</script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
 
   <!-- ============ Header ============ -->
   <header class="site-header" id="top">
@@ -59,7 +60,7 @@
 
       <div class="container hero-content">
         <p class="eyebrow">Hampstead, New Hampshire</p>
-        <h1>Be different.</h1>
+        <h1 aria-label="Be different."><span class="h-line" aria-hidden="true"><span>Be</span></span> <span class="h-line" aria-hidden="true"><span>different.</span></span></h1>
         <p class="hero-lede">Year-round wrestling for middle school and high school athletes, coached by NCAA Division I All-American Connor McGonagle and a staff that has competed at every level of the sport.</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="https://cmg-wrestling-academy.gymdesk.com/signup" target="_blank" rel="noopener">Register</a>
@@ -97,21 +98,21 @@
           <p class="signature">Connor McGonagle<span>Head Coach</span></p>
         </div>
 
-        <dl class="stat-list reveal">
-          <div>
-            <dt>5</dt>
+        <dl class="stat-list" data-stagger>
+          <div class="reveal">
+            <dt data-count="5">5</dt>
             <dd>Days a week, year-round</dd>
           </div>
-          <div>
-            <dt>2,185</dt>
+          <div class="reveal">
+            <dt data-count="2185">2,185</dt>
             <dd>Square feet of Resilite mat</dd>
           </div>
-          <div>
-            <dt>5</dt>
+          <div class="reveal">
+            <dt data-count="5">5</dt>
             <dd>Coaches on staff</dd>
           </div>
-          <div>
-            <dt>9</dt>
+          <div class="reveal">
+            <dt data-count="9">9</dt>
             <dd>Champions at the 2026 Castleton Fall Classic</dd>
           </div>
         </dl>
@@ -126,7 +127,7 @@
           <h2>What we offer</h2>
         </header>
 
-        <div class="program-grid">
+        <div class="program-grid" data-stagger>
           <article class="program reveal">
             <p class="program-tag">Main program</p>
             <h3>Middle School and High School</h3>
@@ -154,7 +155,7 @@
             <h3>What a practice looks like</h3>
             <p>Every practice is structured. Wrestlers get hands-on coaching the whole way through, and we mix the work so they are improving in every part of the sport.</p>
           </div>
-          <ol class="practice-list">
+          <ol class="practice-list" data-scroll-steps>
             <li><span>01</span>Technique and drilling</li>
             <li><span>02</span>Situational wrestling</li>
             <li><span>03</span>Live wrestling</li>
@@ -176,10 +177,17 @@
       </div>
     </section>
 
-    <!-- ============ Photo band ============ -->
-    <figure class="band">
-      <img src="images/practice.jpg" alt="Wrestlers drilling on the mat during practice at CMG" width="1728" height="530" loading="lazy">
-    </figure>
+    <!-- ============ Photo strip (slides sideways as the page scrolls) ============ -->
+    <div class="strip" data-strip role="group" aria-label="Photos from practice and competition">
+      <div class="strip-track">
+        <img class="tile-wide" src="images/practice.jpg" alt="Wrestlers drilling on the mat during practice" width="1728" height="530" loading="lazy">
+        <img class="tile-tall" src="images/bike.jpg" alt="A wrestler doing bike sprints after practice" width="720" height="1280" loading="lazy">
+        <img class="tile-wide" src="images/castleton-team.jpg" alt="CMG wrestlers and coaches at the Castleton Fall Classic" width="1178" height="786" loading="lazy">
+        <img class="tile-tall" src="images/castleton-win.jpg" alt="A CMG wrestler getting his hand raised" width="1048" height="1397" loading="lazy">
+        <img class="tile-wide tile-top" src="images/preseason-team.jpg" alt="CMG wrestlers with their medals" width="1079" height="963" loading="lazy">
+        <img class="tile-wide" src="images/turf.jpg" alt="Wrestlers running sprints on the turf" width="1728" height="476" loading="lazy">
+      </div>
+    </div>
 
     <!-- ============ Schedule ============ -->
     <section class="section" id="schedule">
@@ -195,14 +203,14 @@
           <span>Next practice: <strong data-next-practice>Monday at 6:00 PM</strong></span>
         </div>
 
-        <ol class="week reveal" id="week">
-          <li data-day="1"><span class="day">Mon</span><span class="time">6:00 – 7:30 PM</span><span class="kind">Practice</span></li>
-          <li data-day="2"><span class="day">Tue</span><span class="time">6:00 – 7:30 PM</span><span class="kind">Practice</span></li>
-          <li data-day="3"><span class="day">Wed</span><span class="time">6:00 – 7:30 PM</span><span class="kind">Practice</span></li>
-          <li data-day="4"><span class="day">Thu</span><span class="time">6:00 – 7:30 PM</span><span class="kind">Practice</span></li>
-          <li data-day="5" class="off"><span class="day">Fri</span><span class="time">No practice</span></li>
-          <li data-day="6" class="off"><span class="day">Sat</span><span class="time">No practice</span></li>
-          <li data-day="0"><span class="day">Sun</span><span class="time">10:00 – 11:30 AM</span><span class="kind">Practice</span></li>
+        <ol class="week" id="week" data-stagger>
+          <li class="reveal" data-day="1"><span class="day">Mon</span><span class="time">6:00 – 7:30 PM</span><span class="kind">Practice</span></li>
+          <li class="reveal" data-day="2"><span class="day">Tue</span><span class="time">6:00 – 7:30 PM</span><span class="kind">Practice</span></li>
+          <li class="reveal" data-day="3"><span class="day">Wed</span><span class="time">6:00 – 7:30 PM</span><span class="kind">Practice</span></li>
+          <li class="reveal" data-day="4"><span class="day">Thu</span><span class="time">6:00 – 7:30 PM</span><span class="kind">Practice</span></li>
+          <li data-day="5" class="off reveal"><span class="day">Fri</span><span class="time">No practice</span></li>
+          <li data-day="6" class="off reveal"><span class="day">Sat</span><span class="time">No practice</span></li>
+          <li class="reveal" data-day="0"><span class="day">Sun</span><span class="time">10:00 – 11:30 AM</span><span class="kind">Practice</span></li>
         </ol>
 
         <p class="fine-print reveal">Schedule in effect from Monday, November 23. For changes and tournament weekends, follow <a href="https://www.instagram.com/cmgwrestling/" target="_blank" rel="noopener">@cmgwrestling</a> on Instagram.</p>
@@ -218,12 +226,12 @@
         </header>
 
         <!-- Head coach -->
-        <article class="head-coach reveal">
-          <div class="head-coach-photo">
+        <article class="head-coach">
+          <div class="head-coach-photo frame wipe" data-parallax="0.08">
             <img src="images/coach-connor.jpg" alt="Connor McGonagle" width="336" height="508" loading="lazy">
           </div>
 
-          <div class="head-coach-body">
+          <div class="head-coach-body reveal" data-reveal="right">
             <p class="program-tag">Head Coach</p>
             <h3>Connor McGonagle</h3>
             <p class="head-coach-summary">NCAA Division I All-American, ACC champion and four-time New Hampshire state champion. He graduated from Lehigh University in 2024 with a degree in economics.</p>
@@ -280,7 +288,7 @@
 
         <!-- Assistants -->
         <h3 class="sub-head reveal">Assistant coaches</h3>
-        <div class="coach-grid">
+        <div class="coach-grid" data-stagger>
           <button class="coach-card reveal" type="button" data-coach="taylor">
             <span class="coach-photo"><img src="images/coach-taylor.jpg" alt="" width="336" height="508" loading="lazy"></span>
             <span class="coach-info">
@@ -407,7 +415,7 @@
           <p class="section-intro">Middle school and high school memberships include three practices a week. Every new wrestler gets one free practice to see if it is a good fit.</p>
         </header>
 
-        <div class="price-grid">
+        <div class="price-grid" data-stagger>
           <article class="price reveal">
             <h3>1 Month</h3>
             <p class="amount">$170</p>
@@ -473,7 +481,7 @@
             Hampstead, NH 03841
           </address>
 
-          <ol class="steps">
+          <ol class="steps" data-scroll-steps>
             <li><strong>Park out back.</strong> There are lots in front and behind the building. The back lot usually has more space and is closest to us.</li>
             <li><strong>Use the side entrance.</strong> You will pass it on your way in. Follow the signs.</li>
             <li><strong>Head upstairs.</strong> The wrestling room is on the second floor.</li>
@@ -482,9 +490,11 @@
           <a class="btn btn-outline" href="https://www.google.com/maps/search/?api=1&amp;query=142+NH-111%2C+Hampstead%2C+NH+03841" target="_blank" rel="noopener">Get directions</a>
         </div>
 
-        <figure class="visit-photo reveal">
-          <img src="images/sign.jpg" alt="The CMG Wrestling Academy sign outside the Phanzone Sports Center reading: parking out back, entrance on the side, wrestling room upstairs" width="1142" height="828" loading="lazy">
-          <figcaption>Look for this sign out front.</figcaption>
+        <figure class="visit-photo">
+          <div class="frame wipe" data-parallax="0.08">
+            <img src="images/sign.jpg" alt="The CMG Wrestling Academy sign outside the Phanzone Sports Center reading: parking out back, entrance on the side, wrestling room upstairs" width="1142" height="828" loading="lazy">
+          </div>
+          <figcaption class="reveal">Look for this sign out front.</figcaption>
         </figure>
       </div>
     </section>
@@ -500,27 +510,27 @@
         <div class="faq reveal">
           <details>
             <summary>Can my wrestler try a practice before signing up?</summary>
-            <p>Yes. Every wrestler gets one free practice to see if they like it. Send us a message so we know to expect you.</p>
+            <div class="faq-a"><p>Yes. Every wrestler gets one free practice to see if they like it. Send us a message so we know to expect you.</p></div>
           </details>
           <details>
             <summary>What ages do you coach?</summary>
-            <p>Our main program is for middle school and high school wrestlers. We also run a beginners program for kids ages 7 and up.</p>
+            <div class="faq-a"><p>Our main program is for middle school and high school wrestlers. We also run a beginners program for kids ages 7 and up.</p></div>
           </details>
           <details>
             <summary>Do I still register online if I am paying in person?</summary>
-            <p>Yes. Sign up for the membership you want on our registration page and choose the pay later option when you get to payment. Then bring cash, a check or Venmo to the front desk and we will mark you as paid.</p>
+            <div class="faq-a"><p>Yes. Sign up for the membership you want on our registration page and choose the pay later option when you get to payment. Then bring cash, a check or Venmo to the front desk and we will mark you as paid.</p></div>
           </details>
           <details>
             <summary>Can parents stay and watch?</summary>
-            <p>Absolutely. We have a seating area with a view of the mat and we like having parents in the room.</p>
+            <div class="faq-a"><p>Absolutely. We have a seating area with a view of the mat and we like having parents in the room.</p></div>
           </details>
           <details>
             <summary>Are you open in the off-season?</summary>
-            <p>Yes. We run practice five days a week, year-round.</p>
+            <div class="faq-a"><p>Yes. We run practice five days a week, year-round.</p></div>
           </details>
           <details>
             <summary>How do I know when my membership is ending?</summary>
-            <p>We will let you know seven days before it runs out so you can decide whether to renew or take a break. You can also check your membership any time in the Gymdesk app.</p>
+            <div class="faq-a"><p>We will let you know seven days before it runs out so you can decide whether to renew or take a break. You can also check your membership any time in the Gymdesk app.</p></div>
           </details>
         </div>
       </div>
@@ -550,7 +560,7 @@
           </ul>
         </div>
 
-        <form class="contact-form reveal" id="contact-form" novalidate>
+        <form class="contact-form reveal" data-reveal="right" id="contact-form" novalidate>
           <div class="field">
             <label for="cf-name">Your name</label>
             <input id="cf-name" name="name" type="text" autocomplete="name" required>
@@ -616,6 +626,15 @@
       <p>&copy; <span data-year>2026</span> CMG Wrestling Academy</p>
     </div>
   </footer>
+
+  <!-- ============ Mobile register bar ============ -->
+  <div class="mobile-cta" id="mobile-cta">
+    <div>
+      <span class="fact-label">Next practice</span>
+      <span class="mobile-cta-value" data-next-practice>Monday at 6:00 PM</span>
+    </div>
+    <a class="btn btn-primary" href="https://cmg-wrestling-academy.gymdesk.com/signup" target="_blank" rel="noopener">Register</a>
+  </div>
 
   <!-- ============ Coach dialog ============ -->
   <dialog class="modal" id="coach-dialog" aria-labelledby="coach-dialog-name">

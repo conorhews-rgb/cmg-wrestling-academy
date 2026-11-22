@@ -201,14 +201,6 @@ p:last-child { margin-bottom: 0; }
   text-transform: uppercase;
 }
 
-/* Scroll reveal: a short fade, nothing more */
-.js .reveal {
-  opacity: 0;
-  transform: translateY(14px);
-  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
-}
-.js .reveal.is-visible { opacity: 1; transform: none; }
-
 /* ---------- Header ---------- */
 
 .site-header {
@@ -217,8 +209,10 @@ p:last-child { margin-bottom: 0; }
   z-index: 100;
   height: var(--header-h);
   border-bottom: 1px solid transparent;
-  transition: border-color 0.25s;
+  transition: border-color 0.25s, transform 0.4s var(--ease);
 }
+.site-header.is-hidden { transform: translateY(-100%); }
+.site-header.is-hidden:focus-within { transform: none; }
 /* The blur lives on a pseudo-element so the header itself never becomes the
    containing block for the fixed mobile menu. */
 .site-header::before {
@@ -512,15 +506,33 @@ p:last-child { margin-bottom: 0; }
   font-weight: 500;
 }
 
-/* ---------- Photo band ---------- */
+/* ---------- Photo strip ---------- */
 
-.band { margin: 0; background: #000; }
-.band img {
-  width: 100%;
-  height: clamp(220px, 32vw, 460px);
-  object-fit: cover;
-  object-position: center 40%;
+.strip {
+  padding: 14px 0;
+  background: #000;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
+.strip::-webkit-scrollbar { display: none; }
+.strip-track {
+  display: flex;
+  gap: 14px;
+  width: max-content;
+  padding: 0 14px;
+  will-change: transform;
+}
+.strip img {
+  height: clamp(210px, 30vw, 400px);
+  width: auto;
+  max-width: none;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+.strip .tile-wide { aspect-ratio: 3 / 2; }
+.strip .tile-tall { aspect-ratio: 3 / 4; }
+.strip .tile-top { object-position: center 22%; }
+.motion .strip { overflow: hidden; }
 
 /* ---------- Schedule ---------- */
 
@@ -644,7 +656,6 @@ p:last-child { margin-bottom: 0; }
   aspect-ratio: 4 / 5;
   object-fit: cover;
   object-position: center top;
-  border-radius: var(--radius);
 }
 .head-coach-body h3 { font-size: clamp(2.2rem, 4.5vw, 3.2rem); font-weight: 700; }
 .head-coach-summary { max-width: 60ch; margin: 16px 0 28px; font-size: 1.08rem; }
@@ -961,7 +972,7 @@ p:last-child { margin-bottom: 0; }
 }
 .steps strong { color: var(--text); font-weight: 600; }
 .visit-photo { margin: 0; }
-.visit-photo img { width: 100%; border-radius: var(--radius); }
+.visit-photo img { width: 100%; }
 .visit-photo figcaption { margin-top: 12px; color: var(--dim); font-size: 0.95rem; }
 
 /* ---------- FAQ ---------- */
@@ -995,7 +1006,9 @@ p:last-child { margin-bottom: 0; }
 }
 .faq summary::after { transform: rotate(90deg); }
 .faq details[open] summary::after { transform: rotate(0deg); }
-.faq details p { max-width: 66ch; padding: 0 48px 24px 0; }
+.faq details.is-closing summary::after { transform: rotate(90deg); }
+.faq-a { overflow: hidden; }
+.faq-a p { max-width: 66ch; padding: 0 48px 24px 0; }
 
 /* ---------- Contact ---------- */
 
@@ -1396,5 +1409,157 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.82); }
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
-  .js .reveal { opacity: 1; transform: none; }
+  .next-dot::after { animation: none; }
+}
+
+/* ==========================================================
+   Motion
+   Everything below is progressive: without JavaScript the page
+   is fully visible, and with "reduce motion" switched on the
+   transitions collapse to instant.
+   ========================================================== */
+
+/* Scroll progress line */
+.scroll-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 120;
+  height: 2px;
+  pointer-events: none;
+}
+.scroll-progress span {
+  display: block;
+  height: 100%;
+  background: var(--orange);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+/* Reveal on scroll */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+.js .reveal[data-reveal="right"] { transform: translateX(36px); }
+.js .reveal[data-reveal="left"] { transform: translateX(-36px); }
+.js .reveal.is-visible { opacity: 1; transform: none; }
+
+/* Headings slide up from behind a mask */
+.reveal h2 { overflow: hidden; padding-bottom: 0.04em; }
+.h-inner { display: block; }
+.js .reveal .h-inner { transform: translateY(110%); transition: transform 0.9s var(--ease) 0.1s; }
+.js .reveal.is-visible .h-inner { transform: none; }
+
+/* The short rule beside each eyebrow draws in */
+.js .reveal .eyebrow::before { width: 0; transition: width 0.6s var(--ease) 0.25s; }
+.js .reveal.is-visible .eyebrow::before { width: 28px; }
+
+/* Photos wipe open, then drift slightly as the page moves */
+.frame { overflow: hidden; border-radius: var(--radius); }
+.motion .frame img { scale: 1.1; will-change: translate; }
+/* The clip sits on the image, not the frame, so the frame still registers as on screen */
+.js .wipe > img { clip-path: inset(0 100% 0 0); transition: clip-path 1.1s var(--ease); }
+.js .wipe.is-visible > img { clip-path: inset(0 0 0 0); }
+
+/* Hero intro */
+.h-line { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.03em; }
+.h-line > span { display: inline-block; }
+.js .hero .h-line > span { transform: translateY(108%); animation: hero-rise 1s var(--ease) 0.15s forwards; }
+.js .hero .h-line + .h-line > span { animation-delay: 0.27s; }
+.js .hero .eyebrow,
+.js .hero-lede,
+.js .hero-actions,
+.js .hero-bar { opacity: 0; animation: hero-fade 0.9s var(--ease) forwards; }
+.js .hero .eyebrow { animation-delay: 0.05s; }
+.js .hero-lede { animation-delay: 0.5s; }
+.js .hero-actions { animation-delay: 0.62s; }
+.js .hero-bar { animation-delay: 0.8s; }
+.js .hero-img { scale: 1.08; animation: hero-settle 2s var(--ease) forwards; will-change: translate; }
+@keyframes hero-rise { to { transform: none; } }
+@keyframes hero-fade { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes hero-settle { to { scale: 1; } }
+
+/* Lists that light up row by row as you scroll through them */
+.js [data-scroll-steps] li { opacity: 0.32; transition: opacity 0.45s var(--ease); }
+.js [data-scroll-steps] li.is-on { opacity: 1; }
+.practice-list li { position: relative; }
+.practice-list li::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--orange);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.7s var(--ease);
+}
+.js .practice-list li.is-on::after { transform: scaleX(1); }
+
+/* Next-practice indicator */
+.next-dot { position: relative; flex: none; }
+.next-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--orange);
+  animation: dot-ring 2.4s ease-out infinite;
+}
+@keyframes dot-ring {
+  from { transform: scale(1); opacity: 0.8; }
+  70%, to { transform: scale(2.8); opacity: 0; }
+}
+
+/* Gallery */
+.gallery { transition: opacity 0.2s ease, transform 0.2s ease; }
+.gallery.is-switching { opacity: 0; transform: translateY(10px); }
+.js .gallery-item {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.65s var(--ease), transform 0.65s var(--ease);
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+.js .gallery-item.is-visible { opacity: 1; transform: none; }
+
+/* Mobile register bar */
+.mobile-cta { display: none; }
+
+@media (max-width: 900px) {
+  .js .reveal { transition-delay: 0s; }
+  .js .week .reveal { transition-delay: calc(var(--i, 0) * 55ms); transform: translateX(-22px); }
+  .js .week .reveal.is-visible { transform: none; }
+  .js .reveal[data-reveal="right"],
+  .js .reveal[data-reveal="left"] { transform: translateY(28px); }
+  .js .reveal[data-reveal].is-visible { transform: none; }
+
+  .mobile-cta {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 11px var(--gutter) calc(11px + env(safe-area-inset-bottom));
+    background: rgba(5, 5, 5, 0.97);
+    border-top: 1px solid var(--line-strong);
+    transform: translateY(105%);
+    transition: transform 0.4s var(--ease);
+  }
+  .mobile-cta.is-shown { transform: none; }
+  .mobile-cta-value {
+    display: block;
+    color: var(--text);
+    font-family: var(--display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+  .mobile-cta .btn { min-height: 44px; padding: 0 24px; flex: none; }
+  .site-footer { padding-bottom: 104px; }
 }
